@@ -5,5 +5,7 @@ public class Demo {
 	public static void main(String[] args) {
 		System.out.println("dafadffdafdasssss");
 		System.out.println("daffadf");
+		System.out.println("dafdasfdf");
+		System.out.println("dfafadf");
 	}
 }
