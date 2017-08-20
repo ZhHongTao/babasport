@@ -20,13 +20,35 @@
    		http://www.springframework.org/schema/task/spring-task-4.0.xsd
 		http://code.alibabatech.com/schema/dubbo        
 		http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
-		
+		<!-- 由于服务提供方和服务消费者的启动是有顺序的，必须提供方先启动，所以很麻烦，所以要设置在消费方配置不检查服务是否提供
+		可以在局部设置，
+		<dubbo:reference interface="com.itheima.core.service.TestTbService" id="testTbService"
+		url="dubbo://127.0.0.1:20880" check="false"/>
+		也可以全局设置
+                                       全局的的检查 服务是否提供 -->
+		<dubbo:consumer check="false" timeout="6000000"/>
 		<!-- 服务的消费方 -->
 		<!-- 消费者的名称 -->
 		<dubbo:application name="babasport-consumer"/>
-		<!-- 要连接服务的注册中心 zookeeper -->
-		<dubbo:registry address="192.168.25.128:2181" protocol="zookeeper"/>
+		<!-- 由于是在测试阶段。每次都访问注册中心，要开启linux麻烦，所以可以直接访问服务提供方，不通过注册中心 ，在项目上线的时候还是要用注册中心 -->
+		<!-- 断开与注册中心的连接  这样就没有了与服务提供方连接的路径，所以要在 引用接口的标签上加上url属性-->
+		<dubbo:registry address="N/A" />
+		<!-- 要连接服务的注册中心 zookeeper 
+		 <dubbo:registry address="192.168.25.128:2181" protocol="zookeeper"/>
+		-->
 		<!-- 要使用的接口;配置引用接口 -->
-		<dubbo:reference interface="com.itheima.core.service.TestTbService" id="testTbService"/>
+		<!-- 当请求服务时，如果对面服务不能马上给返回结果（默认一秒）消费方就会断开与服务提供方的连接，重新到注册中心获取新的服务，
+		   可以更改默认连接时间  单位是毫秒值
+		   也可以设置全局连接超时时间
+		   <dubbo:reference interface="com.itheima.core.service.TestTbService" id="testTbService" timeout="2000"/>
+		   <dubbo:consumer timeout="20000" ></dubbo:consumer>
+		 -->
+		 <!-- 测试用的 -->
+		<dubbo:reference interface="com.itheima.core.service.TestTbService" id="testTbService"
+		url="dubbo://127.0.0.1:20880" />
+		<!-- 商品品牌 -->
+		<dubbo:reference interface="com.itheima.brand.service.BrandService" id="brandService"
+		url="dubbo://127.0.0.1:20880" />
+		
 		
 </beans>

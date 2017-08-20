@@ -27,13 +27,23 @@
 		<!-- 配置springmvc的三大核心组件 -->
 		<!-- 适配器映射器 适配器处理器 -->
 		<!-- 注解驱动 -->
-		<mvc:annotation-driven />
+		<mvc:annotation-driven conversion-service="conversionServiceFactory" />
 		
+		<!-- 定义一个转换器工厂 -->
+		<bean id="conversionServiceFactory" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		    <property name="converters">
+		        <set>
+		            <bean class="com.itheima.conversion.TrimConverter"></bean>
+		        </set>
+		    </property>
+		</bean>
 		<!-- 配置视图解析器 -->
 		<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		    <property name="prefix" value="/WEB-INF/console/"/>
 		    <property name="suffix" value=".jsp" />
 		</bean>
+		<!-- 配置支持图片上传 -->
+		<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"></bean>
 		
 		<!-- 导入dubbo消费者的配置文件 -->
 		<import resource="dubbo-consumer.xml"/>
