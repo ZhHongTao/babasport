@@ -8,7 +8,7 @@
     function uploadPic(){
     	var options = {
     			dataType:"json",
-    			url:"/upload/uploadBranPic.do",
+    			url:"/upload/uploadBrandPic.do",
     			type:"post",
     			success:function(data){
     				$("#allUrl").attr("src",data.path);
@@ -29,7 +29,10 @@
 </div>
 <div class="body-box" style="float:right">
 	<form id="jvForm" action="edit.do" method="post">
-	<input type="hidden" value="${brand.id }" name="id" />
+	    <input type="hidden" value="${brand.id }" name="id" />
+	    <input type="hidden" value="${Qname }" name="Qname" />
+	    <input type="hidden" value="${pageNo }" name="pageNo" />
+	    <input type="hidden" value="${QisDisplay }" name="QisDisplay" />
 		<table cellspacing="1" cellpadding="2" width="100%" border="0" class="pn-ftable">
 			<tbody>
 				<tr>
@@ -50,7 +53,7 @@
 				<tr>
 					<td width="20%" class="pn-flabel pn-flabel-h"></td>
 						<td width="80%" class="pn-fcontent">
-						<img width="100" height="100" id="allUrl"/>
+						<img width="100" height="100" id="allUrl" src="${brand.imgUrl }"/>
 						<input type="hidden" name="imgUrl" id="imgUrl" value=""/>
 						<input type="file" name="pic"  onchange="uploadPic()"/>
 					</td>

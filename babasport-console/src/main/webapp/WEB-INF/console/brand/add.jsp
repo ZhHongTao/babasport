@@ -4,6 +4,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>babasport-add</title>
+<script type="text/javascript">
+    function uploadPic(){
+    	var options={
+    			type:"post",
+    			dataType:"json",
+    			url:"/upload/uploadBrandPic.do",
+    			success:function(data){
+    				$("#allUrl").attr("src",data.path);
+    				$("#imgUrl").val(data.path);
+    			}
+    	}
+    	$("#jvForm").ajaxSubmit(options);
+    }
+</script>
 </head>
 <body>
 <div class="box-positon">
@@ -14,7 +28,8 @@
 	<div class="clear"></div>
 </div>
 <div class="body-box" style="float:right">
-	<form id="jvForm" action="add.do" method="post" enctype="multipart/form-data">
+<!--  enctype="multipart/form-data" -->
+	<form id="jvForm" action="add.do" method="post">
 		<table cellspacing="1" cellpadding="2" width="100%" border="0" class="pn-ftable">
 			<tbody>
 				<tr>
@@ -36,7 +51,8 @@
 					<td width="20%" class="pn-flabel pn-flabel-h"></td>
 						<td width="80%" class="pn-fcontent">
 						<img width="100" height="100" id="allUrl"/>
-						<input type="file" />
+						<input type="hidden" id="imgUrl" name="imgUrl" value="" />
+						<input type="file" onchange="uploadPic()" name="pic"/>
 					</td>
 				</tr>
 				<tr>

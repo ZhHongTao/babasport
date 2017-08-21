@@ -46,9 +46,14 @@
 		 <!-- 测试用的 -->
 		<dubbo:reference interface="com.itheima.core.service.TestTbService" id="testTbService"
 		url="dubbo://127.0.0.1:20880" />
-		<!-- 商品品牌 -->
+		<!-- 商品品牌服务接口 -->
 		<dubbo:reference interface="com.itheima.brand.service.BrandService" id="brandService"
 		url="dubbo://127.0.0.1:20880" />
-		
+		<!-- 图片下载的服务 -->
+		<dubbo:reference interface="com.itheima.brand.service.UploadService" id="uploadService"
+		 url="dubbo://127.0.0.1:20880" />
+		 <!-- 商品管理的服务 -->
+		<dubbo:reference interface="com.itheima.core.service.product.ProductService" id="productService"
+		 url="dubbo://127.0.0.1:20880" />
 		
 </beans>

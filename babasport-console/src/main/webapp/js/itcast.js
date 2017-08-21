@@ -14,6 +14,7 @@ Pn.getParam = function(key) {
 		}
 	}
 };
+
 /**
  * check checkbox.
  * 
