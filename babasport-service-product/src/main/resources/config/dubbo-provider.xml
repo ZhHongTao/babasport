@@ -24,11 +24,16 @@
 		<!-- 搭建服务提供方 共分四步 -->
 		<!--1:为服务起个名字 -->
 		<dubbo:application name="babasport-service-product"/>
-		<!-- 2:连接zookeeper注册中心 ip+端口号 192.168.25.128:2181 -->
-		<dubbo:registry address="192.168.25.128:2181" protocol="zookeeper"/>
-		<!-- 3:配置端口号 默认端口号是：20880 -->
-		<dubbo:protocol port="20880" />
+		<!-- 2:连接zookeeper注册中心 ip+端口号 192.168.25.128:2181 同理服务提供方也需要与注册中心断开连接，直接让服务调用方调用
+		<dubbo:registry address="192.168.25.128:2181" protocol="zookeeper"/>-->
+		<dubbo:registry address="N/A" />
+		<!-- 3:注册ip 配置端口号 默认端口号是：20880 -->
+		<dubbo:protocol port="20880" host="127.0.0.1"/>
 		<!-- 4:要提供服务的类  || 配置对外暴露的接口 -->
 		<dubbo:service interface="com.itheima.core.service.TestTbService" ref="testTbService" />
-		
+		<!-- 提供品牌管理的服务 -->
+		<dubbo:service interface="com.itheima.brand.service.BrandService" ref="brandService" />
+		<!-- 图片下载的服务 -->
+		<dubbo:service interface="com.itheima.brand.service.UploadService" ref="uploadService" />
+		<dubbo:service interface="com.itheima.core.service.product.ProductService" ref="productService" />
 </beans>

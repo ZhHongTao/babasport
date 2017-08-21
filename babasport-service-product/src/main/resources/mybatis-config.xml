@@ -4,6 +4,6 @@
 <configuration >
     <!-- 配置别名 -->
     <typeAliases>
-        <package name="com.itheima.core.pojo"/>
+        <package name="com.itheima"/>
     </typeAliases>
 </configuration>

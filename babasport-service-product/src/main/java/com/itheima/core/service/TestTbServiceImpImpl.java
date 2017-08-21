@@ -7,16 +7,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.itheima.core.dao.TestTbDao;
 import com.itheima.core.pojo.TestTb;
 
-@Service("testTbService")
+@Service("testTbServiceImpl")
 @Transactional
-public class TestTbServiceImpl implements TestTbService {
+public class TestTbServiceImpImpl implements TestTbService {
 
 	@Autowired
 	private TestTbDao testTbDao;
 	@Override
 	public void addTestTb(TestTb testTb) {
 		testTbDao.addTestTb(testTb);
-		
 	}
 
 }
