@@ -36,4 +36,6 @@
 		<!-- 图片下载的服务 -->
 		<dubbo:service interface="com.itheima.brand.service.UploadService" ref="uploadService" />
 		<dubbo:service interface="com.itheima.core.service.product.ProductService" ref="productService" />
+		<dubbo:service interface="com.itheima.core.service.product.ColorService" ref="colorService" />
+		<dubbo:service interface="com.itheima.core.service.product.SkuService" ref="skuService" />
 </beans>

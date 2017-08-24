@@ -6,11 +6,36 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <title>babasport-list</title>
 <script type="text/javascript">
+//下架
+function isHide(){
+	//请至少选择一个
+	var rows = $("input[name='ids']:checked");
+	var y = rows.length;
+	if(y == 0){
+		alert("请至少选择一个");
+		return;
+	}
+	//你确定删除吗
+	if(!confirm("你确定下架吗？")){
+		return;
+	}
+	var arr = new Array();
+	for(var i=0;i<y;i++){
+		var id = rows[i].value;
+		arr.push(id);
+	}
+	var ids = arr.join(",")
+	$("#id").val(ids);
+	//提交 Form表单
+	$("#query").attr("action","isNotShow.do");
+	$("#query").submit();
+}
 //上架
 function isShow(){
 	//请至少选择一个
-	var size = $("input[name='ids']:checked").size();
-	if(size == 0){
+	var rows = $("input[name='ids']:checked");
+	var y = rows.length;
+	if(y == 0){
 		alert("请至少选择一个");
 		return;
 	}
@@ -18,10 +43,28 @@ function isShow(){
 	if(!confirm("你确定上架吗")){
 		return;
 	}
+	var arr = new Array();
+	for(var i=0;i<y;i++){
+		var id = rows[i].value;
+		arr.push(id);
+	}
+	var ids = arr.join(",")
+	$("#id").val(ids);
 	//提交 Form表单
-	$("#jvForm").attr("action","/brand/isShow.do");
-	$("#jvForm").attr("method","post");
-	$("#jvForm").submit();
+	$("#query").attr("action","isShow.do");
+	$("#query").submit();
+	
+}
+function look(id){
+	$("#query").attr("action","look.do");
+	$("#id").val(id);
+	$("#query").submit();
+	
+}
+function edit(id){
+	$("#query").attr("action","edit.do");
+	$("#id").val(id);
+	$("#query").submit();
 	
 }
 </script>
@@ -30,15 +73,15 @@ function isShow(){
 <div class="box-positon">
 	<div class="rpos">当前位置: 商品管理 - 列表</div>
 	<form class="ropt">
-		<input class="add" type="button" value="添加" onclick="window.location.href='add.do'"/>
+		<input class="add" type="button" value="添加" onclick="window.location.href='toAdd.do'"/>
 	</form>
 	<div class="clear"></div>
 </div>
 <div class="body-box">
-<form action="list.do" method="post" style="padding-top:5px;">
+<form action="list.do" method="post" style="padding-top:5px;" id="query">
 名称:<input type="text" name="Qname" value="${Qname}"/>
     <input type="hidden" name="id" id="id"/>
-    <input type="hidden" name="pageNo" id="id" value="${pageBean.pageNo }"/>
+    <input type="hidden" name="pageNo"  value="${pageBean.pageNo }"/>
 	<select name="QbrandId">
 		<option value="">请选择品牌</option>
 		<c:forEach items="${brands }" var="brand"> 
@@ -72,7 +115,7 @@ function isShow(){
 		  	<td><input type="checkbox" name="ids" value="${product.id }"/></td>
 		  	<td>${product.id }</td>
 		  	<td align="center">${product.name }</td>
-		  	<td align="center"><img width="50" height="50" src="${product.imgUrl }"/></td>
+		  	<td align="center"><img width="50" height="50" src="${product.imgUrls[0] }"/></td>
 		  	<c:if test="${product.isNew }"></c:if>
 		  	<td align="center">
 		  	    <c:if test="${product.isNew }">是</c:if>
@@ -91,7 +134,7 @@ function isShow(){
 		  	    <c:if test="${!product.isShow }">下架</c:if>
 		  	</td>
 		  	<td align="center">
-		  	<a href="#" class="pn-opt">查看</a> | <a href="#" class="pn-opt">修改</a> | <a href="#" onclick="if(!confirm('您确定删除吗？')) {return false;}" class="pn-opt">删除</a> | <a href="../sku/list.jsp" class="pn-opt">库存</a>
+		  	<a href="#" onclick="look(${product.id})" class="pn-opt">查看</a> | <a href="#" onclick="edit(${product.id})" class="pn-opt">修改</a> | <a href="#" onclick="if(!confirm('您确定删除吗？')) {return false;}" class="pn-opt">删除</a> | <a href="/sku/list.do?productId=${product.id }" class="pn-opt">库存</a>
 		  	</td>
 		  </tr>
 	   </c:forEach>

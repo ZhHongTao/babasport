@@ -201,4 +201,11 @@
       img_url = #{imgUrl,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <!-- public String selectNameById(Long id); -->
+  <select id="selectNameById" parameterType="Long" resultType="com.itheima.product.pojo.product.Color">
+      select id,name from bbs_color 
+      <where>
+          id=#{id}
+      </where>
+  </select>
 </mapper>

@@ -1,34 +1,23 @@
 package com.itheima.core.testTb;
 
-import java.util.Date;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.itheima.core.pojo.TestTb;
-import com.itheima.core.service.TestTbService;
+import redis.clients.jedis.Jedis;
 @RunWith(value=SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath:application-context.xml"})
 public class TestTbTest {
 
-	/*@Autowired
-	private TestTbDao testTbDao;*/
-	@Autowired
-	private TestTbService testTbService;
+	
 	@Test
-	public void testTbAdd(){
-		TestTb tb = new TestTb();
-		tb.setBirthday(new Date());
-		tb.setName("张三");
-		testTbService.addTestTb(tb);
+	public void testJedis(){
+	    Jedis j =new Jedis("192.168.200.128", 6379);
+	    String string = j.get("pid");
+	    System.out.println(string);
+	    Long incr = j.incr("pid");
+	    System.out.println(incr);
 	}
-	public static void main(String[] args) {
-		ClassPathXmlApplicationContext ac = new ClassPathXmlApplicationContext("application-context.xml");
-		Object bean = ac.getBean("testTbService");
-		System.out.println(bean);
-	}
+	
 }

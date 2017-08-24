@@ -1,7 +1,9 @@
 package com.itheima.product.pojo.product;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Product implements Serializable {
     /**
@@ -79,8 +81,28 @@ public class Product implements Serializable {
      */
     private Date createTime;
 
+    private Float price;
+    private String brandName;
     private static final long serialVersionUID = 1L;
-
+   
+    private List<Color> colorList = new ArrayList<>(0);
+   
+	public String[] getColorss(){
+		return colors.split(",");
+	}
+	
+	public String getBrandName() {
+		return brandName;
+	}
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
+	}
+	public String[] getSizess(){
+    	return sizes.split(",");
+    }
+    public String[] getImgUrls(){
+    	return imgUrl.split(",");
+    }
     public Long getId() {
         return id;
     }
@@ -226,4 +248,20 @@ public class Product implements Serializable {
         sb.append("]");
         return sb.toString();
     }
+
+	public List<Color> getColorList() {
+		return colorList;
+	}
+
+	public void setColorList(List<Color> colorList) {
+		this.colorList = colorList;
+	}
+
+	public Float getPrice() {
+		return price;
+	}
+
+	public void setPrice(Float price) {
+		this.price = price;
+	}
 }

@@ -4,6 +4,53 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>babasport-list</title>
+<script type="text/javascript">
+    var oid;
+   //开启修改的单元格
+    function updateSku(id){
+    	if(oid==null){
+    		$("#p"+id).attr("disabled",false);
+        	$("#s"+id).attr("disabled",false);
+        	$("#l"+id).attr("disabled",false);
+        	$("#f"+id).attr("disabled",false);
+        	oid=id;
+    	}else{
+    		if(oid!=null){
+    			//旧
+    			$("#p"+oid).attr("disabled",true);
+            	$("#s"+oid).attr("disabled",true);
+            	$("#l"+oid).attr("disabled",true);
+            	$("#f"+oid).attr("disabled",true);
+            	//新
+    			$("#p"+id).attr("disabled",false);
+            	$("#s"+id).attr("disabled",false);
+            	$("#l"+id).attr("disabled",false);
+            	$("#f"+id).attr("disabled",false);
+            	oid=id;
+    		}
+    	}
+    }
+    //保存修改的库存
+    function addSku(id){
+    	var flag = $("#p"+id).attr("disabled");
+    	if(flag){
+    		return;
+    	}
+    	var p = $("#p"+id).attr("disabled",true).val();
+    	var s =$("#s"+id).attr("disabled",true).val();
+    	var l = $("#l"+id).attr("disabled",true).val();
+    	var f = $("#f"+id).attr("disabled",true).val();
+    	$.post("addSku.do",
+    			{"id":id,"price":p,"deliveFee":f,"stock":s,"upperLimit":l},
+    			function(data){
+    				if(data.message==1){
+    					alert("保存成功！");
+    				}else{
+    					alert("保存失败!");
+    				}
+    			},"json")
+    }
+</script>
 </head>
 <body>
 <div class="box-positon">
@@ -19,7 +66,6 @@
 			<th>商品编号</th>
 			<th>商品颜色</th>
 			<th>商品尺码</th>
-			<th>市场价格</th>
 			<th>销售价格</th>
 			<th>库       存</th>
 			<th>购买限制</th>
@@ -29,131 +75,20 @@
 		</tr>
 	</thead>
 	<tbody class="pn-ltbody">
-			<tr bgcolor="#ffffff" onmouseover="this.bgColor='#eeeeee'" onmouseout="this.bgColor='#ffffff'">
-				<td><input type="checkbox" name="ids" value="73"/></td>
-				<td>20141028114308048</td>
-				<td align="center">西瓜红</td>
-				<td align="center">S</td>
-				<td align="center"><input type="text" id="m52" value="0.0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="p52" value="0.0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="i52" value="0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="l52" value="0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="f52" value="10.0" disabled="disabled" size="10"/></td>
-				<td align="center">不是</td>
-				<td align="center"><a href="javascript:updateSku(52)" class="pn-opt">修改</a> | <a href="javascript:addSku(52)" class="pn-opt">保存</a></td>
+	    <c:forEach items="${skus}" var="sku" >
+	         <tr bgcolor="#ffffff" onmouseover="this.bgColor='#eeeeee'" onmouseout="this.bgColor='#ffffff'">
+				<td><input type="checkbox" name="ids" value="${sku.id }"/></td>
+				<td>${sku.productId }</td>
+				<td align="center">${sku.color.name }</td>
+				<td align="center">${sku.size }</td>
+				<td align="center"><input type="text" id="p${sku.id }" value="${sku.price }" disabled="disabled" size="10"/></td>
+				<td align="center"><input type="text" id="s${sku.id }" value="${sku.stock }" disabled="disabled" size="10"/></td>
+				<td align="center"><input type="text" id="l${sku.id }" value="${sku.upperLimit }" disabled="disabled" size="10"/></td>
+				<td align="center"><input type="text" id="f${sku.id }" value="${sku.deliveFee }" disabled="disabled" size="10"/></td>
+				<td align="center"></td>
+				<td align="center"><a href="javascript:updateSku(${sku.id})" class="pn-opt">修改</a> | <a href="javascript:addSku(${sku.id})" class="pn-opt">保存</a></td>
 			</tr>
-		
-			<tr bgcolor="#ffffff" onmouseover="this.bgColor='#eeeeee'" onmouseout="this.bgColor='#ffffff'">
-				<td><input type="checkbox" name="ids" value="73"/></td>
-				<td>20141028114308048</td>
-				<td align="center">西瓜红</td>
-				<td align="center">M</td>
-				<td align="center"><input type="text" id="m53" value="0.0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="p53" value="0.0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="i53" value="0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="l53" value="0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="f53" value="10.0" disabled="disabled" size="10"/></td>
-				<td align="center">不是</td>
-				<td align="center"><a href="javascript:updateSku(53)" class="pn-opt">修改</a> | <a href="javascript:addSku(53)" class="pn-opt">保存</a></td>
-			</tr>
-		
-			<tr bgcolor="#ffffff" onmouseover="this.bgColor='#eeeeee'" onmouseout="this.bgColor='#ffffff'">
-				<td><input type="checkbox" name="ids" value="73"/></td>
-				<td>20141028114308048</td>
-				<td align="center">西瓜红</td>
-				<td align="center">L</td>
-				<td align="center"><input type="text" id="m54" value="0.0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="p54" value="0.0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="i54" value="0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="l54" value="0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="f54" value="10.0" disabled="disabled" size="10"/></td>
-				<td align="center">不是</td>
-				<td align="center"><a href="javascript:updateSku(54)" class="pn-opt">修改</a> | <a href="javascript:addSku(54)" class="pn-opt">保存</a></td>
-			</tr>
-		
-			<tr bgcolor="#ffffff" onmouseover="this.bgColor='#eeeeee'" onmouseout="this.bgColor='#ffffff'">
-				<td><input type="checkbox" name="ids" value="73"/></td>
-				<td>20141028114308048</td>
-				<td align="center">西瓜红</td>
-				<td align="center">XL</td>
-				<td align="center"><input type="text" id="m55" value="0.0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="p55" value="0.0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="i55" value="0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="l55" value="0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="f55" value="10.0" disabled="disabled" size="10"/></td>
-				<td align="center">不是</td>
-				<td align="center"><a href="javascript:updateSku(55)" class="pn-opt">修改</a> | <a href="javascript:addSku(55)" class="pn-opt">保存</a></td>
-			</tr>
-		
-			<tr bgcolor="#ffffff" onmouseover="this.bgColor='#eeeeee'" onmouseout="this.bgColor='#ffffff'">
-				<td><input type="checkbox" name="ids" value="73"/></td>
-				<td>20141028114308048</td>
-				<td align="center">墨绿</td>
-				<td align="center">S</td>
-				<td align="center"><input type="text" id="m56" value="0.0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="p56" value="0.0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="i56" value="0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="l56" value="0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="f56" value="10.0" disabled="disabled" size="10"/></td>
-				<td align="center">不是</td>
-				<td align="center"><a href="javascript:updateSku(56)" class="pn-opt">修改</a> | <a href="javascript:addSku(56)" class="pn-opt">保存</a></td>
-			</tr>
-		
-			<tr bgcolor="#ffffff" onmouseover="this.bgColor='#eeeeee'" onmouseout="this.bgColor='#ffffff'">
-				<td><input type="checkbox" name="ids" value="73"/></td>
-				<td>20141028114308048</td>
-				<td align="center">墨绿</td>
-				<td align="center">M</td>
-				<td align="center"><input type="text" id="m57" value="0.0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="p57" value="0.0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="i57" value="0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="l57" value="0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="f57" value="10.0" disabled="disabled" size="10"/></td>
-				<td align="center">不是</td>
-				<td align="center"><a href="javascript:updateSku(57)" class="pn-opt">修改</a> | <a href="javascript:addSku(57)" class="pn-opt">保存</a></td>
-			</tr>
-		
-			<tr bgcolor="#ffffff" onmouseover="this.bgColor='#eeeeee'" onmouseout="this.bgColor='#ffffff'">
-				<td><input type="checkbox" name="ids" value="73"/></td>
-				<td>20141028114308048</td>
-				<td align="center">墨绿</td>
-				<td align="center">L</td>
-				<td align="center"><input type="text" id="m58" value="0.0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="p58" value="0.0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="i58" value="0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="l58" value="0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="f58" value="10.0" disabled="disabled" size="10"/></td>
-				<td align="center">不是</td>
-				<td align="center"><a href="javascript:updateSku(58)" class="pn-opt">修改</a> | <a href="javascript:addSku(58)" class="pn-opt">保存</a></td>
-			</tr>
-		
-			<tr bgcolor="#ffffff" onmouseover="this.bgColor='#eeeeee'" onmouseout="this.bgColor='#ffffff'">
-				<td><input type="checkbox" name="ids" value="73"/></td>
-				<td>20141028114308048</td>
-				<td align="center">墨绿</td>
-				<td align="center">XL</td>
-				<td align="center"><input type="text" id="m59" value="0.0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="p59" value="0.0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="i59" value="0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="l59" value="0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="f59" value="10.0" disabled="disabled" size="10"/></td>
-				<td align="center">不是</td>
-				<td align="center"><a href="javascript:updateSku(59)" class="pn-opt">修改</a> | <a href="javascript:addSku(59)" class="pn-opt">保存</a></td>
-			</tr>
-		
-			<tr bgcolor="#ffffff" onmouseover="this.bgColor='#eeeeee'" onmouseout="this.bgColor='#ffffff'">
-				<td><input type="checkbox" name="ids" value="73"/></td>
-				<td>20141028114308048</td>
-				<td align="center">浅粉</td>
-				<td align="center">S</td>
-				<td align="center"><input type="text" id="m60" value="0.0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="p60" value="0.0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="i60" value="0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="l60" value="0" disabled="disabled" size="10"/></td>
-				<td align="center"><input type="text" id="f60" value="10.0" disabled="disabled" size="10"/></td>
-				<td align="center">不是</td>
-				<td align="center"><a href="javascript:updateSku(60)" class="pn-opt">修改</a> | <a href="javascript:addSku(60)" class="pn-opt">保存</a></td>
-			</tr>
+	    </c:forEach>
 	</tbody>
 </table>
 </form>

@@ -27,4 +27,6 @@ public interface ColorDao {
     int updateByPrimaryKeySelective(Color record);
 
     int updateByPrimaryKey(Color record);
+    
+    public Color selectNameById(Long id);
 }

@@ -50,9 +50,9 @@ $(function(){
 					//指定上传文件请求的url。
 					uploadJson : '/upload/uploadFck.do',
 					//上传类型，分别为image、flash、media、file
-					dir : "image"//,
+					dir : "image",
 // 					width : '1000px',
-// 					height : '400px'
+ 					height : '400px'
 				}; 
 				KindEditor.create('#productdesc',kingEditorParams);
 				KindEditor.sync();
@@ -73,10 +73,14 @@ function uploadPic(){
 						 + '<td width="20%" class="pn-flabel pn-flabel-h"></td>'
 						 + '<td width="80%" class="pn-fcontent">';
 				for(var i=0;i<data.length;i++){
-					html += '<img width="100" height="100" src="' + data[i] + '" />'
+					html += '<a href="javascript:;" class="pn-opt" onclick="jQuery(this).remove()">'
+						+'<img width="100" height="100" src="' + data[i] + '" />'
 					     +  '<input type="hidden" name="imgUrl" value="' + data[i] + '"/>'
+					     +'删除</a>'
+					     
 				}
-				html += '<a href="javascript:;" class="pn-opt" onclick="jQuery(this).parents(\'tr\').remove()">删除</a>'
+				//<a href="javascript:;" class="pn-opt" onclick="jQuery(this).remove()">删除</a>
+				html += '<a href="javascript:;" class="pn-opt" onclick="jQuery(this).parents(\'tr\').remove()">&nbsp;&nbsp;&nbsp;&nbsp;全部删除</a>'
 					 +  '</td>'
 					 +  '</tr>';
 				//回显
@@ -133,9 +137,9 @@ function uploadPic(){
 						商品品牌:</td><td width="80%" class="pn-fcontent">
 						<select name="brandId">
 							<option value="">请选择品牌</option>
-							<option value="1">依琦莲</option>
-							<option value="2">凯速（KANSOON）</option>
-							<option value="3">梵歌纳（vangona）</option>
+							<c:forEach items="${brands }" var="brand" >
+							    <option value="${brand.id}" <c:if test="${brandid==product.brandId }">selected="selected"</c:if> >${brand.name }</option>
+							</c:forEach>
 						</select>
 					</td>
 				</tr>
@@ -148,14 +152,13 @@ function uploadPic(){
 				<tr>
 					<td width="20%" class="pn-flabel pn-flabel-h">
 						<span class="pn-frequired">*</span>
-						颜色:</td><td width="80%" class="pn-fcontent">
-							<input type="checkbox" value="9" name="colors"/>西瓜红
-							<input type="checkbox" value="9" name="colors"/>西瓜红
-							<input type="checkbox" value="9" name="colors"/>西瓜红
-							<input type="checkbox" value="9" name="colors"/>西瓜红
-							<input type="checkbox" value="9" name="colors"/>西瓜红
-							<input type="checkbox" value="9" name="colors"/>西瓜红
-							<input type="checkbox" value="9" name="colors"/>西瓜红
+						颜色:</td>
+					<td width="80%" class="pn-fcontent">
+						<c:forEach items="${colors}" var="color" varStatus="vs">
+						          <input type="checkbox" value="${color.id }" checked="checked" name="colors"/>
+						      <c:if test="${vs.count%8==0 }"><br/></c:if>
+						   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						</c:forEach>
 					</td>
 				</tr>
 				<tr>

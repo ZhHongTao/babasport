@@ -38,6 +38,8 @@ public class Sku implements Serializable {
      * 运费 默认10元
      */
     private Float deliveFee;
+    
+    private Color color;
 
     /**
      * 库存
@@ -53,6 +55,13 @@ public class Sku implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+	}
     public Long getId() {
         return id;
     }
@@ -153,4 +162,6 @@ public class Sku implements Serializable {
         sb.append("]");
         return sb.toString();
     }
+
+	
 }
