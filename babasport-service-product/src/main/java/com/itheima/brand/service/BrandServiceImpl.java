@@ -7,10 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itheima.core.dao.brand.BrandDao;
-import com.itheima.product.pojo.Brand;
-import com.itheima.product.pojo.BrandQuery;
+import com.itheima.core.web.Constants;
+import com.itheima.product.pojo.brand.Brand;
+import com.itheima.product.pojo.brand.BrandQuery;
 
 import cn.itcast.common.page.Pagination;
+import redis.clients.jedis.Jedis;
 
 @Service("brandService")
 @Transactional
@@ -103,9 +105,12 @@ public class BrandServiceImpl implements BrandService{
 	 * @param brand
 	 * @return
 	 */
+	@Autowired
+	private Jedis jedis;
 	@Override
 	public void edit(Brand brand) {
 		brandDao.edit(brand);
+		jedis.hset(Constants.BRAND, String.valueOf(brand.getId()), brand.getName());
 	}
 	
 	/**
@@ -116,8 +121,14 @@ public class BrandServiceImpl implements BrandService{
 	@Override
 	public void add(Brand brand) {
 		brandDao.add(brand);
+		//如果更改状态为不可用  就会从redis缓存中删除
+		if(brand.getIsDisplay()==1){
+			jedis.hset(Constants.BRAND,String.valueOf(brand.getId()), brand.getName());
+		}else{
+			jedis.hdel(Constants.BRAND, String.valueOf(String.valueOf(brand.getId())));
+		}
+		
 	}
-	
 	/**
 	 * 根据id删除一个品牌
 	 * @param id
@@ -126,6 +137,7 @@ public class BrandServiceImpl implements BrandService{
 	@Override
 	public void deleteOneById(Integer id) {
 		brandDao.deleteOneById(id);
+		jedis.hdel(Constants.BRAND, String.valueOf(id));
 	}
 
 	/**

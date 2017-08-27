@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.itheima.brand.service.BrandService;
 import com.itheima.core.service.product.ColorService;
 import com.itheima.core.service.product.ProductService;
-import com.itheima.product.pojo.Brand;
+import com.itheima.product.pojo.brand.Brand;
 import com.itheima.product.pojo.product.Color;
 import com.itheima.product.pojo.product.Product;
 
@@ -94,9 +94,14 @@ public class ProductController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value="/console/product/edit.do")
-	public String edit(Long id,String Qname,boolean QisShow,Integer pageNo,Long QbrandId,Model model){
+	@RequestMapping(value="/console/product/toEdit.do")
+	public String toEdit(Long id,String Qname,boolean QisShow,Integer pageNo,Long QbrandId,Model model){
 		Product product = productService.findProductById(id);
+		
+		List<Brand> brands = brandService.findBrandByQuery(null, null);
+		model.addAttribute("brands", brands);
+		List<Color> colors = colorService.findAllColor();
+		model.addAttribute("colors", colors);
 		
 		model.addAttribute("product", product);
 		model.addAttribute("QisShow", QisShow);
@@ -105,11 +110,27 @@ public class ProductController {
 		model.addAttribute("Qname", Qname);
 		return "product/edit";
 	}
+	/**
+	 * 商品修改
+	 * @param product
+	 * @param Qname
+	 * @param QisShow
+	 * @param pageNo
+	 * @param QbrandId
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/console/product/edit.do")
+	public String edit(Product product,String Qname,boolean QisShow,Integer pageNo,Long QbrandId,Model model){
+		productService.edit(product);
+		
+		
+		return "forward:/console/product/list.do";
+	}
 	//上架
 	@RequestMapping(value="/console/product/isShow.do")
 	public String isShow(String id,String Qname,boolean QisShow,Integer pageNo,Long QbrandId,Model model) throws Exception{
 		productService.isShow(id);
-		
 		return "forward:/console/product/list.do";
 	}
 	//下架

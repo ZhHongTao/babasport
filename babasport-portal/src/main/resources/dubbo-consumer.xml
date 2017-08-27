@@ -30,8 +30,12 @@
 		<dubbo:registry address="N/A"/>
 		<!-- 连接服务 -->
 		<!-- 搜索服务 -->
-		<dubbo:reference interface="com.itheima.core.service.product.SearchService" url="dubbo://127.0.0.1:20881" id="searchService" /> 
+		<dubbo:reference interface="com.itheima.core.service.product.SearchService" 
+		url="dubbo://127.0.0.1:20881" id="searchService" /> 
 		<!-- 品牌服务 -->
 		<dubbo:reference interface="com.itheima.brand.service.BrandService" id="brandService"
+		url="dubbo://127.0.0.1:20880" />
+		<!-- 详情页服务 -->
+		<dubbo:reference interface="com.itheima.core.service.CmsService" id="cmsService"
 		url="dubbo://127.0.0.1:20880" />
 </beans>

@@ -97,9 +97,7 @@ public class Product implements Serializable {
 	public void setBrandName(String brandName) {
 		this.brandName = brandName;
 	}
-	public String[] getSizess(){
-    	return sizes.split(",");
-    }
+	
     public String[] getImgUrls(){
     	return imgUrl.split(",");
     }
@@ -209,6 +207,9 @@ public class Product implements Serializable {
 
     public String getSizes() {
         return sizes;
+    }
+    public String[] getSizess() {
+        return sizes.split(",");
     }
 
     public void setSizes(String sizes) {

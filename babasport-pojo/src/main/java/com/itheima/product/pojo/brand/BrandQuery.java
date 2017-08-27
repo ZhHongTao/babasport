@@ -1,14 +1,15 @@
-package com.itheima.product.pojo;
+package com.itheima.product.pojo.brand;
 
 import java.io.Serializable;
 
-public class Brand implements Serializable{
+public class BrandQuery implements Serializable{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	private static final Integer PAGESIZE=10;
 	//品牌ID  bigint
     private Long id;
     //品牌名称
@@ -21,6 +22,34 @@ public class Brand implements Serializable{
     private Integer sort;
     //是否可用   0 不可用 1 可用
     private Integer isDisplay;//is_display
+    //第几页
+    private Integer pageNo=1;
+    //起始行
+    private Integer startRow;
+    //每页的条数
+    private Integer pageSize=PAGESIZE;
+    
+	public Integer getPageNo() {
+		return pageNo;
+	}
+	public void setPageNo(Integer pageNo) {
+		this.startRow=(pageNo-1)*pageSize;
+		this.pageNo = pageNo;
+	}
+	public Integer getStartRow() {
+		return startRow;
+	}
+	public void setStartRow(Integer startRow) {
+		this.startRow = startRow;
+	}
+	public Integer getPageSize() {
+		
+		return pageSize;
+	}
+	public void setPageSize(Integer pageSize) {
+		this.startRow=(pageNo-1)*pageSize;
+		this.pageSize = pageSize;
+	}
 	public Long getId() {
 		return id;
 	}

@@ -138,7 +138,7 @@ function uploadPic(){
 						<select name="brandId">
 							<option value="">请选择品牌</option>
 							<c:forEach items="${brands }" var="brand" >
-							    <option value="${brand.id}" <c:if test="${brandid==product.brandId }">selected="selected"</c:if> >${brand.name }</option>
+							    <option value="${brand.id}">${brand.name }</option>
 							</c:forEach>
 						</select>
 					</td>
@@ -154,11 +154,18 @@ function uploadPic(){
 						<span class="pn-frequired">*</span>
 						颜色:</td>
 					<td width="80%" class="pn-fcontent">
-						<c:forEach items="${colors}" var="color" varStatus="vs">
-						          <input type="checkbox" value="${color.id }" checked="checked" name="colors"/>
-						      <c:if test="${vs.count%8==0 }"><br/></c:if>
-						   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						</c:forEach>
+					    <table>
+					        <c:forEach items="${colors}" var="color" varStatus="vs">
+					           <c:if test="${vs.count%8==1 }">
+					               <tr>
+					           </c:if>
+					              <td>
+						            <input type="checkbox" value="${color.id }" name="colors"/>${color.name }
+						          </td>
+						      <c:if test="${vs.count%8==0 }"><tr/></c:if>
+						   </c:forEach>
+					    </table>
+						
 					</td>
 				</tr>
 				<tr>

@@ -62,7 +62,7 @@ function look(id){
 	
 }
 function edit(id){
-	$("#query").attr("action","edit.do");
+	$("#query").attr("action","toEdit.do");
 	$("#id").val(id);
 	$("#query").submit();
 	
@@ -115,7 +115,8 @@ function edit(id){
 		  	<td><input type="checkbox" name="ids" value="${product.id }"/></td>
 		  	<td>${product.id }</td>
 		  	<td align="center">${product.name }</td>
-		  	<td align="center"><img width="50" height="50" src="${product.imgUrls[0] }"/></td>
+		  	
+		  	<td align="center"><img width="50" height="50" <c:if test="${product.imgUrls!=null}">src="${product.imgUrls[0] }"</c:if> /></td>
 		  	<c:if test="${product.isNew }"></c:if>
 		  	<td align="center">
 		  	    <c:if test="${product.isNew }">是</c:if>

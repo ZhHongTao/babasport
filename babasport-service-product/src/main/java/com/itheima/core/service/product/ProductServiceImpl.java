@@ -3,12 +3,22 @@ package com.itheima.core.service.product;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Session;
+import javax.jms.TextMessage;
 
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
-import org.apache.solr.common.SolrInputDocument;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +26,8 @@ import com.itheima.core.dao.brand.BrandDao;
 import com.itheima.core.dao.product.product.ColorDao;
 import com.itheima.core.dao.product.product.ProductDao;
 import com.itheima.core.dao.product.product.SkuDao;
+import com.itheima.core.service.CmsService;
+import com.itheima.core.service.StaticPageService;
 import com.itheima.product.pojo.product.Color;
 import com.itheima.product.pojo.product.Product;
 import com.itheima.product.pojo.product.ProductQuery;
@@ -98,6 +110,7 @@ public class ProductServiceImpl implements ProductService {
 	private BrandDao brandDao;
 	@Autowired
 	private ColorDao colorDao;
+	//根据id查询商品
 	@Override
 	public Product findProductById(Long id) {
 		Product product = productDao.selectByPrimaryKey(id);
@@ -118,37 +131,50 @@ public class ProductServiceImpl implements ProductService {
 	 * 上架操作
 	 */
 	@Autowired
+	private JmsTemplate jmsTempalate;
+	@Autowired
 	private HttpSolrServer solrServer;
+	@Autowired
+	private StaticPageService staticPageService; 
+	@Autowired
+	private CmsService cmsService;
 	@Override
 	public void isShow(String ids) throws Exception{
 		//更改数据库中商品的状态为上架
 		//创建商品对象并id和上架状态
 		Product product = new Product();
 		product.setIsShow(true);
-		for(String id:ids.split(",")){
+		for(final String id:ids.split(",")){
 			product.setId(Long.valueOf(id));
 			productDao.updateByPrimaryKeySelective(product);
-			//更改完为上架状态后要将他的信息放到索引库中
-			//创建document对象
-			Product p = productDao.selectByPrimaryKey(Long.valueOf(id));
-		    SolrInputDocument doc = new SolrInputDocument();
-		    doc.setField("id",p.getId());
-		    doc.setField("name_ik", p.getName());
-		    doc.setField("brandId", p.getBrandId());
-		    doc.setField("url",p.getImgUrl());
-		    SkuQuery skuQuery = new SkuQuery();
-		    skuQuery.createCriteria().andProductIdEqualTo(Long.valueOf(id));
-		    skuQuery.setOrderByClause("price asc");
-		    skuQuery.setStartRow(1);
-		    skuQuery.setPageSize(1);
-		    List<Sku> skus = skuDao.selectByExample(skuQuery);
-		    doc.setField("price", skus.get(0).getPrice());
-			solrServer.add(doc, 1000);
+			//商品上架后就发送消息到activeMQ
+			jmsTempalate.send("productId",new MessageCreator(){
+				@Override
+				public Message createMessage(Session session) throws JMSException {
+					TextMessage textMessage = session.createTextMessage(String.valueOf(id));
+					return textMessage;
+				}
+			});
 			//静态化
+		    Map<String,Object> root = new HashMap<>();
+		    //商品信息
+		    Product p = cmsService.selectProductById(Long.valueOf(id));
+		    root.put("product", p);
+		    //获取商品项信息
+		    List<Sku> skus = cmsService.selectSkusByProductId(Long.valueOf(id));
+			Set<Color> colors = new HashSet<>();
+			for (Sku sku : skus) {
+				colors.add(sku.getColor());
+			}
+			root.put("skus", skus);
+			root.put("colors", colors);
+			staticPageService.index(root,id);
 		}
 	}
 	/**
 	 * 下架操作
+	 * @throws IOException 
+	 * @throws SolrServerException 
 	 */
 	
 	@Override
@@ -158,8 +184,44 @@ public class ProductServiceImpl implements ProductService {
 		for(String id:ids.split(",")){
 			product.setId(Long.valueOf(id));
 			productDao.updateByPrimaryKeySelective(product);
+			try {
+				solrServer.deleteById(id);
+				solrServer.commit();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
+	//修改商品
+	@Override
+	public void edit(Product product) {
+		productDao.updateByPrimaryKeySelective(product);
+		
+		for (String cId : product.getColors().split(",")) {
+			for(String sId : product.getSizes().split(",")){
+				SkuQuery example = new SkuQuery();
+				com.itheima.product.pojo.product.SkuQuery.Criteria createCriteria = example.createCriteria();
+				createCriteria.andProductIdEqualTo(product.getId());
+				createCriteria.andColorIdEqualTo(Long.valueOf(cId));
+				createCriteria.andSizeEqualTo(sId);
+				List<Sku> list = skuDao.selectByExample(example);
+				if(list.size()==0){
+					Sku sku = new Sku();
+					sku.setColorId(Long.valueOf(cId));
+					sku.setSize(sId);
+					sku.setProductId(product.getId());
+					sku.setPrice(0f);
+					sku.setDeliveFee(4f);
+					sku.setStock(200);
+					sku.setUpperLimit(1222);
+					sku.setCreateTime(new Date());
+					skuDao.insertSelective(sku);
+				}
+			}
+		}
+		
+	}
+	
 	
 
 }

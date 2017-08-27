@@ -38,4 +38,5 @@
 		<dubbo:service interface="com.itheima.core.service.product.ProductService" ref="productService" />
 		<dubbo:service interface="com.itheima.core.service.product.ColorService" ref="colorService" />
 		<dubbo:service interface="com.itheima.core.service.product.SkuService" ref="skuService" />
+		<dubbo:service interface="com.itheima.core.service.CmsService" ref="cmsService" />
 </beans>

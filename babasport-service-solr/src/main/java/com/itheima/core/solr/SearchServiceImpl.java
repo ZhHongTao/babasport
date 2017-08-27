@@ -1,8 +1,11 @@
 package com.itheima.core.solr;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
@@ -14,10 +17,16 @@ import org.apache.solr.common.SolrDocumentList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.itheima.core.dao.brand.BrandDao;
 import com.itheima.core.service.product.SearchService;
+import com.itheima.core.web.Constants;
 import com.itheima.page.Pagination;
+import com.itheima.product.pojo.brand.Brand;
+import com.itheima.product.pojo.brand.BrandQuery;
 import com.itheima.product.pojo.product.Product;
 import com.itheima.product.pojo.product.ProductQuery;
+
+import redis.clients.jedis.Jedis;
 
 @Service("searchService")
 public class SearchServiceImpl implements SearchService{
@@ -117,6 +126,40 @@ public class SearchServiceImpl implements SearchService{
 		//这只分页的的路径（页码对应的url）
 		pagination.pageView("/search", builder.toString());
 		return pagination;
+	}
+	@Autowired
+	private Jedis jedis;
+	@Autowired
+	private BrandDao brandDao;
+	@Override
+	public List<Brand> selectBrandList() {
+		//要从redis中获取到品牌结果集
+		Map<String, String> map = jedis.hgetAll(Constants.BRAND);
+		Set<Entry<String,String>> set = map.entrySet();
+		List<Brand> list=null;
+		if(map!=null && map.size()>0){
+			list =new ArrayList<>();
+			for (Entry<String, String> entry : set) {
+				Brand b = new Brand();
+				b.setId(Long.parseLong(entry.getKey()));
+				b.setName(entry.getValue());
+				list.add(b);
+			}
+			return list;
+		}
+		//如果redis中没有就从mysql中查找
+	    BrandQuery brandQuery = new BrandQuery();
+	    brandQuery.setIsDisplay(1);
+	    list= brandDao.findBrandByQuery(brandQuery);
+	    //并存一份到redis中
+	    Map<String,String> hashMap = new LinkedHashMap<>();
+	    for (Brand brand : list) {
+			//jedis.hset("brand", String.valueOf(brand.getId()),brand.getName());
+	    	hashMap.put(String.valueOf(brand.getId()),brand.getName());
+		}
+	    jedis.hmset(Constants.BRAND, hashMap);
+		jedis.expire(Constants.BRAND, 1000*60*60*24*7);
+		return list;
 	}
 
 }

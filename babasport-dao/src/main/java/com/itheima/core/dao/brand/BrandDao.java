@@ -2,8 +2,8 @@ package com.itheima.core.dao.brand;
 
 import java.util.List;
 
-import com.itheima.product.pojo.Brand;
-import com.itheima.product.pojo.BrandQuery;
+import com.itheima.product.pojo.brand.Brand;
+import com.itheima.product.pojo.brand.BrandQuery;
 
 public interface BrandDao {
 

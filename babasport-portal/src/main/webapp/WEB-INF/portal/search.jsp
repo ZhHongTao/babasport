@@ -275,7 +275,7 @@
 															onclick="window.open('/product/detail?id=${product.id}')"
 															style="position: relative;"> <img width="220"
 															height="220" class="err-product"
-															src="${product.imgUrls[0]}">
+															src="${product.imgUrls[0]}"/>
 																<div id="gwd_float_curve_trigger"
 																	class="gwd_float_curve_trigger gwd_float_curve_up"
 																	style="left: 70px; top: 180px;">
@@ -285,7 +285,8 @@
 																		<span class="gwd_float_curve_trigger_hint">上涨</span>
 																		<div class="gwd_float_curve_overlay"></div>
 																	</div>
-																</div></a>
+																</div>
+														 </a>
 														<div data-ico="1201" data-venid="14951"></div>
 														</a>
 													</div>
@@ -298,8 +299,8 @@
 														</div>
 													</div>
 													<div class="p-name p-name-type-2">
-														<a target="_blank" title="满129立减10,199减20优惠券,支持货到付款"
-															href="javascript:;" onclick=""> <em>${product.name }</em>
+														<a title="满129立减10,199减20优惠券,支持货到付款"
+															href="javascript:;" onclick="window.open('http://localhost:8081/html/product/${product.id}.html')"> <em>${product.name }</em>
 														</a>
 													</div>
 													<div class="p-commit">

@@ -107,7 +107,12 @@ function uploadPic(){
 <a href="javascript:void(0);" ref="#tab_4" title="包装清单" class="nor">包装清单</a>
 </span></h2>
 <div class="body-box" style="float:right">
-	<form id="jvForm" action="add.do" method="post" enctype="multipart/form-data">
+	<form id="jvForm" action="edit.do" method="post" enctype="multipart/form-data">
+	    <input type="hidden" name="Qname" value="${Qname}"/>
+        <input type="hidden" name="id" value="${product.id }"/>
+        <input type="hidden" name="pageNo"  value="${pageNo }"/>
+        <input type="hidden" name="QisShow"  value="${QisShow }"/>
+        <input type="hidden" name="QbrandId"  value="${QbrandId }"/>
 		<table cellspacing="1" cellpadding="2" width="100%" border="0" class="pn-ftable">
 			<tbody id="tab_1">
 				<tr>
@@ -138,7 +143,7 @@ function uploadPic(){
 						<select name="brandId">
 							<option value="">请选择品牌</option>
 							<c:forEach items="${brands }" var="brand" >
-							    <option value="${brand.id}" <c:if test="${brandid==product.brandId }">selected="selected"</c:if> >${brand.name }</option>
+							    <option value="${brand.id}" <c:if test="${brand.id==product.brandId }">selected="selected"</c:if> >${brand.name }</option>
 							</c:forEach>
 						</select>
 					</td>
@@ -146,7 +151,7 @@ function uploadPic(){
 				<tr>
 					<td width="20%" class="pn-flabel pn-flabel-h">
 						商品毛重:</td><td width="80%" class="pn-fcontent">
-						<input type="text" value="${product.weigth }" class="required" name="weight" maxlength="10"/>KG
+						<input type="text" value="${product.weight }" class="required" name="weight" maxlength="10"/>KG
 					</td>
 				</tr>
 				<tr>
@@ -154,30 +159,42 @@ function uploadPic(){
 						<span class="pn-frequired">*</span>
 						颜色:</td>
 					<td width="80%" class="pn-fcontent">
-						<c:forEach items="${colors}" var="color" varStatus="vs">
-						   <input type="checkbox" value="${color.id }" name="colors"/>${color.name}
-						   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<c:if test="${vs.count%8==0 }"><br/></c:if>
+					    <table>
+					        <c:forEach items="${colors}" var="color" varStatus="vs">
+					          <c:if test="${vs.count%8==1 }"><tr></c:if>
+						      <c:set var="isDone" value="0"></c:set>
+						         <c:forEach items="${product.colorList }" var="pc">
+						             <c:if test="${color.id==pc.id }">
+						                <td><input type="checkbox" value="${color.id }" checked="checked" name="colors"/>${color.name}</td>
+						                <c:set var="isDone" value="1" ></c:set>
+						              </c:if>
+						         </c:forEach>
+						        <c:if test="${isDone!=1}">
+						          <td><input type="checkbox" value="${color.id }" name="colors"/>${color.name}</td>
+						        </c:if>
+					                <c:if test="${vs.count%8==0 }"></tr></c:if>
 						</c:forEach>
+					    </table>
 					</td>
 				</tr>
 				<tr>
 					<td width="20%" class="pn-flabel pn-flabel-h">
 						<span class="pn-frequired">*</span>
 						尺码:</td><td width="80%" class="pn-fcontent">
-						<input type="checkbox" name="sizes" value="S"/>S
-						<input type="checkbox" name="sizes" value="M"/>M
-						<input type="checkbox" name="sizes" value="L"/>L
-						<input type="checkbox" name="sizes" value="XL"/>XL
-						<input type="checkbox" name="sizes" value="XXL"/>XXL
+						<input type="checkbox" name="sizes" <c:if test="${fn:contains(product.sizes,'S') }">checked="checked"</c:if>   value="S"/>S
+						<input type="checkbox" name="sizes" <c:if test="${fn:contains(product.sizes,'M') }">checked="checked"</c:if> value="M"/>M
+						<input type="checkbox" name="sizes" <c:if test="${fn:contains(product.sizes,'L') }">checked="checked"</c:if> value="L"/>L
+						<input type="checkbox" name="sizes" <c:if test="${fn:contains(product.sizes,'XL') }">checked="checked"</c:if> value="XL"/>XL
+						<input type="checkbox" name="sizes" <c:if test="${fn:contains(product.sizes,'XXL') }">checked="checked"</c:if> value="XXL"/>XXL
 					</td>
 				</tr>
 				<tr>
 					<td width="20%" class="pn-flabel pn-flabel-h">
 						状态:</td><td width="80%" class="pn-fcontent">
-						<input type="checkbox" name="isNew" value="1"/>新品
-						<input type="checkbox" name="isCommend" value="1"/>推荐
-						<input type="checkbox" name="isHot" value="1"/>热卖
+						
+						<input type="checkbox" name="isNew" <c:if test="${product.isNew }">checked="checked"</c:if> value="1"/>新品
+						<input type="checkbox" name="isCommend" <c:if test="${product.isCommend }">checked="checked"</c:if> value="1"/>推荐
+						<input type="checkbox" name="isHot" <c:if test="${product.isHot }">checked="checked"</c:if> value="1"/>热卖
 					</td>
 				</tr>
 			</tbody>
@@ -194,20 +211,36 @@ function uploadPic(){
 					<td width="20%" class="pn-flabel pn-flabel-h"></td>
 						<td width="80%" class="pn-fcontent">
 						<input type="file" onchange="uploadPic()" name="pics" multiple="multiple"/>
+						<c:if test="${product.imgUrls!=null }">
+						    <tr>
+						       <td width="20%" class="pn-flabel pn-flabel-h"></td>
+						       <td width="80%" class="pn-fcontent">
+						    <c:forEach items="${product.imgUrls }" var="img">
+						        <a href="javascript:;" class="pn-opt" onclick="jQuery(this).remove()">
+						           <img width="100" height="100" src="${img }" />
+					                <input type="hidden" name="imgUrl" value="${img }"/>
+					                                                 删除
+					             </a>
+						    </c:forEach>
+					       </td>
+					     </tr>
+						</c:if>
 					</td>
 				</tr>
 			</tbody>
 			<tbody id="tab_3" style="display: none">
 				<tr>
 					<td >
-						<textarea rows="20" cols="180" id="productdesc" name="description"></textarea>
+						<textarea rows="20" cols="180" id="productdesc" name="description">
+						    ${product.description }
+						</textarea>
 					</td>
 				</tr>
 			</tbody>
 			<tbody id="tab_4" style="display: none">
 				<tr>
 					<td >
-						<textarea rows="20" cols="180" id="productList" name="packageList"></textarea>
+						<textarea rows="20" cols="180" id="productList"  name="packageList">${product.packageList }</textarea>
 					</td>
 				</tr>
 			</tbody>

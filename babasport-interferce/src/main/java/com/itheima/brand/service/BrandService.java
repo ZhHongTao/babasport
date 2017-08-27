@@ -2,7 +2,7 @@ package com.itheima.brand.service;
 
 import java.util.List;
 
-import com.itheima.product.pojo.Brand;
+import com.itheima.product.pojo.brand.Brand;
 
 import cn.itcast.common.page.Pagination;
 

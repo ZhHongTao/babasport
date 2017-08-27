@@ -36,9 +36,48 @@ window.pageConfig = {
 		HM : '0'
 	}
 };
+var colorId;
+function colorToRed(obj,id){
+	colorId = id;
+	$("#colors div").removeClass("selected");
+	$(obj).addClass("selected");
+	var html="";
+	<c:forEach items="${skus}" var="sku">
+        if('${sku.colorId}' == id){
+        	if(html==""){
+        		html+= '<div class="item selected" id="${sku.size}" onclick="sizeToRed(this,\'${sku.size}\')">'
+  			      +'<b></b><a href="javascript:;" title="${sku.size}" >${sku.size}</a>'
+  			      +'</div>';
+        		$("#bbs-price").html('${sku.price}');
+        	}else{
+        		html+= '<div class="item" id="${sku.size}" onclick="sizeToRed(this,\'${sku.size}\')">'
+  			      +'<b></b><a href="javascript:;" title="${sku.size}" >${sku.size}</a>'
+  			      +'</div>';
+        	}
+        	
+        }
+	</c:forEach>
+	$("#sizes").html(html);
+	//$("#sizes div:first").addClass("selected");
+}
+function sizeToRed(obj,size){
+	$("#sizes div").removeClass("selected");
+	$(obj).addClass("selected");
+	<c:forEach items="${skus}" var="sku">
+	    if('${sku.size}'==size && '${sku.colorId}'==colorId){
+	    	$("#bbs-price").html('${sku.price}');
+	    }
+	</c:forEach>
+}
+$(function(){
+	//nth-child(2)
+	$("#colors div:eq(0)").trigger("click");
+	$("#sizes div:first").trigger("click");
+});
 </script>
 </head>
 <body>
+
 <!-- header start -->
 <jsp:include page="commons/header.jsp" />
 <!-- header end -->
@@ -72,7 +111,7 @@ window.pageConfig = {
 					<li id="summary-price">
 						<div class="dt">巴&nbsp;巴&nbsp;价：</div>
 						<div class="dd">
-							<strong class="p-price" id="bbs-price">￥888.00</strong> <a
+							<strong class="p-price" id="bbs-price"></strong> <a
 								id="notice-downp" href="javascript:;" target="_blank">(降价通知)</a>
 						</div>
 					</li>
@@ -178,8 +217,8 @@ window.pageConfig = {
 			<div id="preview">
 				<div id="spec-n1" class="jqzoom"
 					clstag="shangpin|keycount|product|spec-n1">
-					<img data-img="1" width="350" height="350" src="${product.images[0]}"
-						alt="${product.name}" jqimg="${product.images[0]}" />
+					<img data-img="1" width="350" height="350" src="${product.imgUrls[0]}"
+						alt="${product.name}" jqimg="${product.imgUrls[0]}" />
 				</div>
 
 				<div id="spec-list" clstag="shangpin|keycount|product|spec-n5">
@@ -187,7 +226,7 @@ window.pageConfig = {
 					<a href="javascript:;" class="spec-control" id="spec-backward"></a>
 					<div class="spec-items">
 						<ul class="lh">
-							<c:forEach items="${product.images}" var="pic" varStatus="status">
+							<c:forEach items="${product.imgUrls}" var="pic" varStatus="status">
 								<c:choose>
 									<c:when test="${status.index == 0 }">
 										<li><img data-img="1" class="img-hover"

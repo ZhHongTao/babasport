@@ -43,4 +43,7 @@ public interface ProductService {
 	//下架
 	public void isNotShow(String id);
 
+	//修改商品
+	public void edit(Product product);
+
 }

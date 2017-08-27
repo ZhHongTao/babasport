@@ -6,7 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.itheima.brand.service.BrandService;
-import com.itheima.product.pojo.Brand;
+import com.itheima.product.pojo.brand.Brand;
 
 import cn.itcast.common.page.Pagination;
 
